@@ -13,6 +13,7 @@ app.use(morgan('dev'));
 //Variables globales
 
 //Routes
+app.use(require('./routes')); 
 
 //Empezar  servidor
 app.listen(app.get('port'), () => {
