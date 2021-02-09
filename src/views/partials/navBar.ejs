@@ -1,0 +1,65 @@
+<header>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-md navbar-light mb-5 bg-light fixed-top scrolling-navbar">
+    <div class="container-fluid">
+
+      <!-- Brand -->
+      <a class="navbar-brand" href="/home">
+        <i class="fas fa-store" alt="ucabMarket"></i>
+      </a>
+
+      <!-- Collapse button -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#basicExampleNav"
+        aria-controls="basicExampleNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <!-- Links -->
+      <div class="collapse navbar-collapse" id="basicExampleNav">
+
+        <!-- Right -->
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="/search" class="nav-link navbar-link-2 waves-effect">
+                  Productos
+                </a>
+              </li>
+          <li class="nav-item">
+            <a href="/car" class="nav-link navbar-link-2 waves-effect">
+              <i class="fas fa-shopping-cart pl-0"></i>
+            </a>
+          </li>
+            <li class="dropdown mr-2">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                Categorias
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    <% for (var i=0; i<categoria.length; i++) {%>
+                        <a class="dropdown-item" href="/categoria/<%=categoria[i].categoria_id_pkey%>"><%=categoria[i].nombre%></a>
+                    <%}%>
+                </div>
+            </li>
+            <li class="dropdown">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown" aria-expanded="false">
+                Tiendas
+                </button>
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
+                    <% for (var i=0; i<store.length; i++) {%>
+                        <a class="dropdown-item" href="/tienda/<%=store[i].tienda_id_pkey%>"><%=store[i].nombre%></a>
+                    <%}%>
+                </div>
+            </li>
+          <li class="nav-item pl-2 mb-2 mb-md-0">
+            <a href="/login" type="button"
+              class="btn btn-outline-info btn-sm btn-rounded btn-navbar waves-effect waves-dark">Log Out</a>
+          </li>
+        </ul>
+
+      </div>
+      <!-- Links -->
+    </div>
+  </nav>
+  <!-- Navbar -->
+
+</header>

@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <%- include ('partials/head')%>
+
+        <title>
+            <%=title%>
+        </title>
+</head>
+
+<body class="bg-dark">
+    <%- include ('partials/navBar')%>
+
+<!--Section: Block Content-->
+<section>
+    
+    <!-- Grid row -->
+    <div class="row">
+    <% if(product!==undefined && product.length>0){%>
+        <% for (var i=0; i<product.length; i++) {%>
+        <!-- Grid column -->
+        <div class="col-md-4 mb-4">
+    
+            <!-- Card -->
+            <div class="">
+    
+            <div class="">
+                <a href="/product/<%= product[i].producto_id_pkey%>">
+                <div class="mask">
+                    <img class="img-fluid"
+                    src="<%=product[i].ruta%>">
+                    <div class="mask rgba-black-slight"></div>
+                </div>
+                </a>
+            </div>
+    
+            <div class="text-center pt-4">
+    
+                <h5><%= product[i].nombre%></h5>
+                <hr>
+                <h6 class="mb-3"><%= product[i].precio%>$</h6>
+                <a href="/car/<%={id:product[i].producto_id_pkey,cant:1}%>"><button type="button" class="btn btn-primary btn-sm mr-1 mb-2"><i
+                    class="fas fa-shopping-cart pr-2"></i>Añadir al carrito</button></a>
+            </div>
+    
+            </div>
+            <!-- Card -->
+    
+        </div>
+        <!-- Grid column -->
+        <%}%>
+    <%}else{%>
+
+        <div class="col-md-16 mb-16">
+    
+            <!-- Card -->
+            <div class="">
+    
+            <div class="text-center pt-4">
+    
+                <h5>No Existen productos</h5>
+                <hr>
+                <h6 class="mb-3">Seleccione otra opción</h6>
+                
+            </div>
+    
+            </div>
+            <!-- Card -->
+    
+        </div>
+
+
+    <%}%>
+    </div>
+    <!-- Grid row -->
+  
+  </section>
+  <!--Section: Block Content-->
+  
+<%- include ('partials/footer')%>
+
+<%- include ('partials/scripts')%>
+</body>

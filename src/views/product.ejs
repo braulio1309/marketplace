@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <%- include ('partials/head')%>
+
+        <title>
+            <%=title%>
+        </title>
+</head>
+
+<body class="bg-dark">
+    <%- include ('partials/navBar')%>
+
+    <!--Main layout-->
+    <main >
+        <div class="container dark-grey-text mt-5">
+
+            <!--Grid row-->
+            <div class="row wow fadeIn">
+
+                <!--Grid column-->
+                <div class="col-md-6 mb-4">
+
+                    <img src= <%=product.ruta%>
+                        class="img-fluid" alt="">
+
+                </div>
+                <!--Grid column-->
+
+                <!--Grid column-->
+                <div class="col-md-6 mb-4">
+
+                    <!--Content-->
+                    <div class="p-4">
+                        
+                            
+                        
+                        <div class="mb-3">
+                            <% if(typeof product.categorias != 'undefined'){%>
+                                <% product.categorias.forEach((cat)=>{ %>
+                                <a href=<%=`/categoria/${cat.idCat}`%>>
+                                    <span class="badge red mr-1"><%=cat.nombreCat%></span>
+                                </a>
+                                <% })%>
+                            <%}%>
+                        </div>
+
+                        <p class="lead">
+                            <span class="mr-1">
+                                <del><%=product.precio%></del>
+                            </span>
+                            <span><%=product.precio - product.precio * (product.descuento_porcentaje/100)%>$</span>
+                            <span>(<%=product.descuento_porcentaje%>% OFF)</span>
+                            <span><%=product.cantidad_en_inventario%> Cantidades Disponibles</span>
+                        </p>
+
+                        <p class="lead font-weight-bold">Descripción</p>
+
+                        <p><%=product.descripcion%></p>
+
+                        <form class="d-flex justify-content-left" >
+                            <!-- Default input -->
+                            <input type="number" name="cant" onchange="plus()"id="cant" value="1" aria-label="Search" class="form-control"
+                                style="width: 100px">
+                            <button  href="/car/<%={id:product.id_producto_pkey,cant:?}%>"class="btn btn-primary btn-md my-0 p" type="submit">Añadir al carrito
+                                <i class="fas fa-shopping-cart ml-1"></i>
+                            </button>
+
+                        </form>
+
+                    </div>
+                    <!--Content-->
+
+                </div>
+                <!--Grid column-->
+
+            </div>
+            <!--Grid row-->
+
+            <hr>
+        </div>
+    </main>
+    <!--Main layout-->
+
+        }
+    </script>
+
+
+    <%- include ('partials/footer')%>
+
+    <%- include ('partials/scripts')%>
+</body>
