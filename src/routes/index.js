@@ -4,6 +4,7 @@ const bodyParser= require('body-parser');
 const {check,validationResult}=require('express-validator');
 const urlencodedparser=bodyParser.urlencoded({extended:false});
 const dbFunc= require('../bd_functions/bdFunctions.js');
+
 var idUsuario=0;
 
 
@@ -174,6 +175,103 @@ router.post('/validateRegister', urlencodedparser,[
     }
 
 });
+
+//Administradores
+
+router.get('/loginadmin', async(req, res) => {
+   console.log(await dbFunc.getUser('ricardito@gmai.com'));
+   res.render('loginadmin',{title:'Marketplace-Registro',footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/loginglobal', async(req, res) => {
+   console.log(await dbFunc.getUser('ricardito@gmai.com'));
+   res.render('loginadmin',{title:'Marketplace-Registro',footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/category-admin', async(req, res) => {
+   let data=await dbFunc.getCategoriesName();
+   res.render('categoriaadmin',{title:'Marketplace-Registro',categorias:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/product-admin', async(req, res) => {
+   let data=await dbFunc.getAllProducts();
+   res.render('productoadmin',{title:'Marketplace-Registro',productos:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/usuarios-admin', async(req, res) => {
+   let data=await dbFunc.getAllUsers();
+   res.render('usuariosadmin',{title:'Marketplace-Registro',users:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/tiendas-admin', async(req, res) => {
+   let data=await dbFunc.getStoresName();
+   res.render('tiendaadmin',{title:'Marketplace-Registro',tiendas:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/compras-admin', async(req, res) => {
+    console.log(idUsuario);
+   let data=await dbFunc.getAllCompras();
+   res.render('comprasadmin',{title:'Marketplace-Registro',compras:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/ventas-admin', async(req, res) => {
+   let data=await dbFunc.getVentasVista();
+   res.render('comprasadmin',{title:'Marketplace-Registro',compras:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/solo-clientes', async(req, res) => {
+   let data=await dbFunc.getUserClientesVista();
+   res.render('usuariosadmin',{title:'Marketplace-Registro',users:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/tiendas-activas', async(req, res) => {
+   let data=await dbFunc.getTiendasActivasVista();
+   res.render('tiendaadmin',{title:'Marketplace-Registro',tiendas:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/ocultar-tienda/:idtienda', async(req, res) => {
+   let data=await dbFunc.updateTienda(req.params.idtienda);
+   res.render('tiendaadmin',{title:'Marketplace-Registro',tiendas:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/detalle-factura/:idfactura', async(req, res) => {
+   let idfactura=req.params.idfactura;
+   console.log(idfactura)
+   let data=await dbFunc.getDetalleCompras(idfactura);
+   res.render('detallecomprasadmin',{title:'Marketplace-Registro',compras:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/tienda-productos/:idtienda', async(req, res) => {
+   let idtienda=req.params.idtienda;
+   
+   let data=await dbFunc.getProductByStore(idtienda);
+   res.render('productoadmin',{title:'Marketplace-Registro',productos:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+});
+
+router.get('/insertar-carrito/:idproducto', async(req, res) => {
+    console.log(idUsuario);
+    let idProduct=req.params.idproducto;
+    if(req.params.CantProduct != 0 || req.params.CantProduct!= undefined ){
+        let CantProduct=req.params.CantProduct; 
+    }
+    let CantProduct=1; 
+    
+    let flag=await dbFunc.existCar({user:idUsuario,producto:idProduct})
+    let aux=await dbFunc.getProduct(idProduct)
+    let costo=aux.precio - (aux.precio*aux.descuento_porcentaje*100)
+    costo=costo*CantProduct
+    
+    if(flag){
+        await dbFunc.updateCar(idUsuario,idProduct,CantProduct,costo)
+    }else{
+        
+        await dbFunc.InsertTable("carrito",{cantidad:CantProduct,costo:costo,usuario_id_pkey:idUsuario,producto_id_pkey:idProduct,estado:1})
+    }
+    let data2=await dbFunc.getCategoriesName();
+    let data3=await dbFunc.getStoresName();
+    res.render('car',{title:`Marketplace-Catalogo`,store:data3,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
 
 
 module.exports = router;
