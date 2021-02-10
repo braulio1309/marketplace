@@ -22,7 +22,7 @@ app.use(morgan('dev'));
 app.use(require('./routes')); 
 
 //Static Files
-app.use(express.static(path.join(__dirname,'public')))
+app.use(express.static(path.join(__dirname,"public")));
 
 //Empezar  servidor
 app.listen(app.get('port'), () => {

@@ -100,8 +100,8 @@
                                             <p><span class="mr-1"><strong>
                                                         <%=product[i].precio%>
                                                     </strong></span></p>
-                                            <button type="button" class="btn btn-primary btn-sm mr-1 mb-2"><i
-                                                    class="fas fa-shopping-cart pr-2"></i>Añadir al carrito</button>
+                                            <a href="/insertar-carrito/<%=product[i].producto_id_pkey%>" type="button" class="btn btn-primary btn-sm mr-1 mb-2"><i
+                                                    class="fas fa-shopping-cart pr-2"></i>Añadir al carrito</a>
                                             <a href="/product/<%=product[i].producto_id_pkey%>">
                                                 <button type="button" class="btn btn-light btn-sm mr-1 mb-2">
                                                     <i class="fas fa-info-circle pr-2"></i>Detalles

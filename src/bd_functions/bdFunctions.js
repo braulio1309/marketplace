@@ -113,8 +113,16 @@ var functions = {
     updateCar:async(user,prod,cant,cost)=>{
 
         await promisePool.query(
-        'UPDATE carrito SET cantidad=?,costo=? WHERE usuario_id_pkey=? AND producto_id_pkey=?',
-        [cant,cost,user,prod]
+        'UPDATE tiendas SET cantidad=?,costo=? WHERE usuario_id_pkey=? AND producto_id_pkey=?',
+        [idtienda]
+        )
+
+    },
+    updateTienda:async(idtienda)=>{
+
+        await promisePool.query(
+        'UPDATE tiendas SET estado_de_tienda=0 WHERE tienda_id_pkey=? ',
+        [idtienda]
         )
 
     },
@@ -124,7 +132,17 @@ var functions = {
         return rows;
     },
     getStoresName:async () => {
-        const [rows, fields] = await promisePool.query('SELECT tienda_id_pkey,nombre from tiendas')
+        const [rows, fields] = await promisePool.query('SELECT tienda_id_pkey,nombre, direccion, telefono, estado_de_tienda from tiendas')
+        
+        return rows;
+    },
+    getAllCompras:async () => {
+        const [rows, fields] = await promisePool.query('SELECT nmro_factura_id_pkey, fecha_compra, costo_total, u.nombres, u.apellidos FROM compras, usuarios u WHERE u.usuario_id_pkey = cliente_id_foreign');
+        
+        return rows;
+    },
+    getDetalleCompras:async (idfactura) => {
+        const [rows, fields] = await promisePool.query('SELECT nmro_factura_id_pkey, p.nombre, cp.cantidad, cp.costo FROM compras c,compras_productos cp, productos p WHERE nmro_factura_id_foreign = ? AND p.producto_id_pkey = producto_id_foreign', [idfactura]);
         
         return rows;
     },
@@ -134,6 +152,31 @@ var functions = {
           `INSERT INTO ${tableName} SET ?`,params
         )
       
+    },
+    getVentasVista:async () => {
+        const [rows, fields] = await promisePool.query('SELECT * FROM ventas');
+        
+        return rows;
+    },
+    getCategoriaVentasVista:async () => {
+        const [rows, fields] = await promisePool.query('categoria_de_tiendas_mayores_categorias_vista');
+        
+        return rows;
+    },
+    getCategoriaProductosVentasVista:async () => {
+        const [rows, fields] = await promisePool.query('SELECT * FROM categoria_de_productos_mayores_categorias_vista');
+        
+        return rows;
+    },
+    getTiendasActivasVista:async () => {
+        const [rows, fields] = await promisePool.query('SELECT * FROM tiendas_activas_vista');
+        
+        return rows;
+    },
+    getUserClientesVista:async () => {
+        const [rows, fields] = await promisePool.query('SELECT * FROM usuarios_solo_clientes_vista');
+        
+        return rows;
     },
     encrypt: function encrypt(text){
         var hash = bcrypt.hashSync(text, 10);
