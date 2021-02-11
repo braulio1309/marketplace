@@ -76,7 +76,7 @@
             <div class="breadcrumbs-top float-md-right">
               <div class="breadcrumb-wrapper mr-1">
                 <ol class="breadcrumb">
-                  <li class="breadcrumb-item"><a href="index.html">Home</a>
+                  <li class="breadcrumb-item"><a href="/home">Home</a>
                   </li>
                   <li class="breadcrumb-item active">Productos
                   </li>
@@ -120,15 +120,15 @@
 							</tr>
 						</thead>
 						<tbody>
-                            <% if(productos!==undefined && productos.length>0){%>
-                                <% for (var i=0; i<productos.length; i++) {%>
+                            <% if(product!==undefined && product.length>0){%>
+                                <% for (var i=0; i<product.length; i++) {%>
 							<tr>
-								<th scope="row"> <%=productos[i].producto_id_pkey%></th>
-								<td> <%=productos[i].nombre%></td>
-								<td> <%=productos[i].descuento_porcentaje%> %</td>
-								<td> <%=productos[i].precio%></td>
-                                <td> <%=productos[i].estado_producto%></td>
-                                <td> <a href="/modificar-producto/<%=productos[i].producto_id_pkey%>" class="btn btn-success btn-min-width mr-1 mb-1">Editar</a></td>
+								<th scope="row"> <%=product[i].producto_id_pkey%></th>
+								<td> <%=product[i].nombre%></td>
+								<td> <%=product[i].descuento_porcentaje%> %</td>
+								<td> <%=product[i].precio%></td>
+                                <td> <%=product[i].estado_producto%></td>
+                                <td> <a href="/modificar-producto/<%=product[i].producto_id_pkey%>" class="btn btn-success btn-min-width mr-1 mb-1">Editar</a></td>
 							</tr>
 							<%}%>
                                     <%}%>
