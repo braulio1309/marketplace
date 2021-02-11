@@ -33,6 +33,11 @@ var functions = {
         
         return rows;
     },
+    miTienda: async (idUsuario) => {
+        const [rows, fields] = await promisePool.query('SELECT * from administradores_tiendas WHERE usuario_id_foreign=?', [idUsuario]);
+        
+        return rows[0];
+    },
     getProduct: async (id) => {
 
         const [rows, fields] = await promisePool.query(
@@ -103,6 +108,13 @@ var functions = {
         }
         return rows; 
     },
+    getMyCar:async(id)=>{
+        var [rows, fields] = await promisePool.query('SELECT c.cantidad, c.costo, p.nombre FROM carrito c, productos p WHERE c.producto_id_pkey = p.producto_id_pkey AND usuario_id_pkey=?',id);
+        if(rows[0]===undefined){
+            rows=[]
+        }
+        return rows; 
+    },
     existCar:async (id)=>{
         const [rows, fields] = await promisePool.query('SELECT * from carrito WHERE usuario_id_pkey=? AND producto_id_pkey=?',[id.user,id.producto]);
         if(rows[0]===undefined){
@@ -110,11 +122,19 @@ var functions = {
         }else
             return true;
     },
-    updateCar:async(user,prod,cant,cost)=>{
+    updateCar:async(iduser,idproduct,cant,cost)=>{
 
         await promisePool.query(
         'UPDATE tiendas SET cantidad=?,costo=? WHERE usuario_id_pkey=? AND producto_id_pkey=?',
-        [idtienda]
+        [cant,cost,iduser,idproduct]
+        )
+
+    },
+    updateProductos:async(nombre,cantidad_en_inventario,precio,porcentaje_descuento, tienda_id_pkey, estado, idProducto)=>{
+
+        await promisePool.query(
+        'UPDATE productos SET nombre=?,cantidad_en_inventario=?, precio=?, porcentaje_descuento=?, tienda_id_pkey=?, estado_producto=? WHERE usuario_id_pkey=? AND producto_id_pkey=?',
+        [nombre,cantidad_en_inventario,precio,porcentaje_descuento, tienda_id_pkey, estado, idProducto]
         )
 
     },

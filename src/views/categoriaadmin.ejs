@@ -121,6 +121,7 @@
 <!-- Bordered table start -->
 <div class="row">
 	<div class="col-12">
+    <a href="/registrar-categoria" class="btn btn-success btn-min-width mr-1 mb-1">Nueva categoría</a>
 		<div class="card">
 			<div class="card-header">
 				<h4 class="card-title">Categorías</h4>
@@ -138,12 +139,14 @@
 				<div class="card-body">
 					<p class="card-text">Categorías disponibles, haga click para ver las subcategorías</p>
 				</div>
+        
 				<div class="table-responsive">
 					<table class="table table-bordered mb-0">
 						<thead>
 							<tr>
 								<th>#</th>
 								<th>Nombre</th>
+                
 								
 								
 							</tr>
@@ -154,6 +157,7 @@
 							<tr>
 								<th scope="row"> <%=categorias[i].categoria_id_pkey%></th>
 								<td> <%=categorias[i].nombre%></td>
+               
 								
 							</tr>
 							<%}%>
