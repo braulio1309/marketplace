@@ -80,10 +80,22 @@ router.get('/car',async(req,res)=>{
         console.log(item.producto_id_pkey)
         product.push(aux)
     })
-    console.log("2"+product)
+    let sum=0;
+    await datacar.forEach(async(item)=>{
+        let aux=await dbFunc.getProduct(item.producto_id_pkey)
+        console.log(item.producto_id_pkey)
+        product.push(aux)
+    })
+    console.log(sum)
     let data2=await dbFunc.getCategoriesName();
     let data3=await dbFunc.getStoresName();
     console.log(3)
+    product.forEach(p=>{
+        sum=sum+(p.precio-(p.precio*(p.descuento_porcentaje/100)))
+
+    })
+    datacar.costo=sum;
+
     res.render('car',{title:`Marketplace-Catalogo`,datacar:datacar,products:product,store:data3,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
 });
 
@@ -91,7 +103,7 @@ router.get('/login', (req, res) => {
     
     res.render('login',{title:'Marketplace-Ingreso',footerText:frases[Math.floor(Math.random() * frases.length)]});
 });
-
+var tipo=0;
 router.post('/validateLog', urlencodedparser,[
     check('email','Correo invalido').isEmail().normalizeEmail(),
     check('email','Correo no registrado').custom(async(value, { req }) => {
@@ -100,6 +112,7 @@ router.post('/validateLog', urlencodedparser,[
           throw new Error('Correo no registrado');
         }
         idUsuario=rows.usuario_id_pkey;
+        tipo=rows.tipo_de_usuario;
         return true;
     }),
     check('password','Contraseña Incorrecta').custom(async (value, { req }) => {
@@ -119,9 +132,14 @@ router.post('/validateLog', urlencodedparser,[
         let data2=await dbFunc.getCategoriesName();
         let data3=await dbFunc.getStoresName();
         console.log(data2)
-        res.render('home',{title:`Marketplace`,store:data3,product:data,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+        if(tipo==3){
+            res.render('productoadmin',{title:`Marketplace`,store:data3,product:data,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+        }else if(tipo==2){
+            res.render('productshop',{title:`Marketplace`,store:data3,product:data,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+        }else{
+            res.render('home',{title:`Marketplace`,store:data3,product:data,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+        }
     }
-    
 
 });
 
