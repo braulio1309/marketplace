@@ -63,11 +63,11 @@
 
                         <p><%=product.descripcion%></p>
 
-                        <form class="d-flex justify-content-left" >
+                        <form action="/insertar-carrito-multi/<%=product.producto_id_pkey%>" class="d-flex justify-content-left" >
                             <!-- Default input -->
                             <input type="number" name="cant" onchange="plus()"id="cant" value="1" aria-label="Search" class="form-control"
                                 style="width: 100px">
-                            <button  href="/car/<%={id:product.id_producto_pkey,cant:?}%>"class="btn btn-primary btn-md my-0 p" type="submit">Añadir al carrito
+                            <button class="btn btn-primary btn-md my-0 p" type="submit">Añadir al carrito
                                 <i class="fas fa-shopping-cart ml-1"></i>
                             </button>
 

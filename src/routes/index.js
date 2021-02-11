@@ -4,7 +4,7 @@ const bodyParser= require('body-parser');
 const {check,validationResult}=require('express-validator');
 const urlencodedparser=bodyParser.urlencoded({extended:false});
 const dbFunc= require('../bd_functions/bdFunctions.js');
-
+const upload = require('../lib/storage.js');
 var idUsuario=0;
 
 
@@ -193,10 +193,7 @@ router.get('/category-admin', async(req, res) => {
    res.render('categoriaadmin',{title:'Marketplace-Registro',categorias:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
 });
 
-router.get('/product-admin', async(req, res) => {
-   let data=await dbFunc.getAllProducts();
-   res.render('productoadmin',{title:'Marketplace-Registro',productos:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
-});
+
 
 router.get('/usuarios-admin', async(req, res) => {
    let data=await dbFunc.getAllUsers();
@@ -251,15 +248,13 @@ router.get('/tienda-productos/:idtienda', async(req, res) => {
 router.get('/insertar-carrito/:idproducto', async(req, res) => {
     console.log(idUsuario);
     let idProduct=req.params.idproducto;
-    if(req.params.CantProduct != 0 || req.params.CantProduct!= undefined ){
-        let CantProduct=req.params.CantProduct; 
-    }
-    let CantProduct=1; 
+    var CantProduct=1; 
     
+
     let flag=await dbFunc.existCar({user:idUsuario,producto:idProduct})
     let aux=await dbFunc.getProduct(idProduct)
-    let costo=aux.precio - (aux.precio*aux.descuento_porcentaje*100)
-    costo=costo*CantProduct
+    let costo=0
+    
     
     if(flag){
         await dbFunc.updateCar(idUsuario,idProduct,CantProduct,costo)
@@ -269,8 +264,109 @@ router.get('/insertar-carrito/:idproducto', async(req, res) => {
     }
     let data2=await dbFunc.getCategoriesName();
     let data3=await dbFunc.getStoresName();
-    res.render('car',{title:`Marketplace-Catalogo`,store:data3,categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+    let datacar = await getMyCar(idUsuario);
+    res.render('car',{title:`Marketplace-Catalogo`,store:data3,datacar:datacar, categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
  });
+
+ router.get('/insertar-carrito-multi/:idproducto', async(req, res) => {
+    console.log(idUsuario);
+    let idProduct=req.params.idproducto;
+    var CantProduct=req.body.cant; 
+    
+
+    let flag=await dbFunc.existCar({user:idUsuario,producto:idProduct})
+    let aux=await dbFunc.getProduct(idProduct)
+    let costo=0
+    
+    
+    if(flag){
+        await dbFunc.updateCar(idUsuario,idProduct,CantProduct,costo)
+    }else{
+        
+        await dbFunc.InsertTable("carrito",{cantidad:CantProduct,costo:costo,usuario_id_pkey:idUsuario,producto_id_pkey:idProduct,estado:1})
+    }
+    let data2=await dbFunc.getCategoriesName();
+    let data3=await dbFunc.getStoresName();
+    let datacar = await getMyCar(idUsuario);
+    res.render('car',{title:`Marketplace-Catalogo`,store:data3,datacar:datacar, categoria:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+
+ 
+
+ router.post('/insertar-categoria', urlencodedparser, upload.single('image'), async(req, res) => {
+   
+
+    let params={
+            nombre:req.body.nombre,
+            descripcion:req.body.descripcion,
+            img_ruta:req.body.image,
+        }
+        //dbFunc.InsertTable('categorias',params);
+    let data=await dbFunc.getCategoriesName();
+    res.render('categoriaadmin',{title:'Marketplace-Registro',categorias:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+ //PRODUCTOS
+ router.get('/modificar-producto/:idproduct', async(req, res) => {
+    let data = await dbFunc.getProduct(req.params.idproduct);
+    console.log(data.nombre)
+    res.render('newproducto',{title:'Marketplace-Registro', producto:data, footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+ router.post('/editar-producto/:idproducto', urlencodedparser, upload.single('image'), async(req, res) => {
+   
+    let data = await dbFunc.getProduct(req.params.idproduct);
+
+    let data2=await dbFunc.getProductByStore(1);
+
+        dbFunc.updateProductos(req.body.nombre, req.body.cantidad, req.body.precio, req.body.descuento, data.tienda_id_pkey, data.estado_producto, data.producto_id_pkey);
+        res.render('productshop',{title:'Marketplace-Registro',productos:data2,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+
+ router.get('/registrar-producto', async(req, res) => {
+    
+    res.render('newproducto',{title:'Marketplace-Registro', footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+ router.post('/insertar-producto', urlencodedparser, async(req, res) => {
+   
+    let idTienda = await dbFunc.miTienda(idUsuario);
+
+    let params={
+            nombre:req.body.nombre,
+            precio: req.body.precio,
+            descripcion:req.body.descripcion,
+            cantidad_en_inventario:req.body.cantidad,
+            descuento_porcentaje: req.body.descuento,
+            estado_producto: 1,
+            tienda_id_pkey: 1
+        }
+        dbFunc.InsertTable('productos',params);
+
+    let data=await dbFunc.getProductByStore(1);
+    res.render('productshop',{title:'Marketplace-Registro',productos:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+ router.get('/registrar-producto', async(req, res) => {
+    
+    res.render('newproducto',{title:'Marketplace-Registro', footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+ router.get('/product-admin', async(req, res) => {
+    let data=await dbFunc.getAllProducts();
+    res.render('productoadmin',{title:'Marketplace-Registro',productos:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
+ router.get('/product-shop', async(req, res) => {
+    let idTienda = await dbFunc.miTienda(1);
+    console.log(idTienda.tienda_id_pkey)
+    let data=await dbFunc.getProductByStore(1);
+    console.log(data)
+    res.render('productshop',{title:'Marketplace-Registro',productos:data,footerText:frases[Math.floor(Math.random() * frases.length)]});
+ });
+
 
 
 
